@@ -1,0 +1,11 @@
+# Ejemplo de configuración de variables
+# Copia este archivo a terraform.tfvars y ajusta los valores según tus necesidades
+
+# Región de AWS donde se desplegará la infraestructura
+# aws_region = "us-east-1"
+
+# Nombre del proyecto (se usa para nombrar recursos)
+# project_name = "examen-redes"
+
+# Ambiente (dev, test, prod)
+# environment = "dev"
