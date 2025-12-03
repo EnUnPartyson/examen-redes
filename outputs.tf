@@ -41,8 +41,23 @@ output "db_security_group_id" {
 
 # Application Outputs
 output "application_url" {
-  description = "URL to access the web application"
+  description = "URL to access the application"
   value       = "http://${module.compute.alb_dns_name}"
+}
+
+output "scheduling_api_url" {
+  description = "URL to access the scheduling API"
+  value       = "http://${module.compute.alb_dns_name}/api/scheduling"
+}
+
+output "api_endpoints" {
+  description = "API endpoint paths"
+  value = {
+    health       = "/api/scheduling/health"
+    info         = "/api/scheduling/info"
+    appointments = "/api/scheduling/appointments"
+    statistics   = "/api/scheduling/statistics"
+  }
 }
 
 output "load_balancer_dns" {

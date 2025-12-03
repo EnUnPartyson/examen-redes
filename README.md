@@ -73,6 +73,23 @@ Internet
 - **API REST**: Flask en Python (endpoints `/api/health`, `/api/info`)
 - **Base de Datos**: RDS MySQL 8.0 con backups automáticos
 
+### API de Agendamiento (Módulo Scheduling-API)
+
+- **API REST completa** para gestión de citas/agendamiento
+- **Auto Scaling Group**: 2-4 instancias dedicadas
+- **Endpoints disponibles**:
+  - `GET /api/scheduling/health` - Health check
+  - `GET /api/scheduling/appointments` - Listar citas
+  - `POST /api/scheduling/appointments` - Crear cita
+  - `GET /api/scheduling/appointments/:id` - Obtener cita
+  - `PUT /api/scheduling/appointments/:id` - Actualizar cita
+  - `DELETE /api/scheduling/appointments/:id` - Eliminar cita
+  - `GET /api/scheduling/available-slots` - Horarios disponibles
+  - `GET /api/scheduling/statistics` - Estadísticas
+- **Base de datos** integrada con RDS MySQL
+- **CloudWatch Logs** para monitoreo
+- **IAM Roles** con permisos específicos
+
 ---
 
 ## 📁 Estructura del Proyecto
@@ -93,10 +110,16 @@ examen-redes/
     │   ├── main.tf
     │   ├── variables.tf
     │   └── outputs.tf
-    └── compute/               # Módulo de servicios
+    ├── compute/               # Módulo de servicios
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
+    └── scheduling-api/        # Módulo de API de Agendamiento
         ├── main.tf
         ├── variables.tf
-        └── outputs.tf
+        ├── outputs.tf
+        ├── user-data.sh
+        └── README.md
 ```
 
 ---
@@ -178,9 +201,52 @@ Después del despliegue obtendrás:
 
 ```bash
 application_url      = "http://alb-xxxxxxxxx.us-east-1.elb.amazonaws.com"
+scheduling_api_url   = "http://alb-xxxxxxxxx.us-east-1.elb.amazonaws.com/api/scheduling"
 vpc_id              = "vpc-xxxxxxxxx"
 database_endpoint   = "examen-redes-dev-db.xxxxxxxxx.us-east-1.rds.amazonaws.com:3306"
 nat_gateway_ips     = ["54.xxx.xxx.xxx", "54.xxx.xxx.xxx"]
+```
+
+---
+
+## 🚀 Uso de la API de Agendamiento
+
+### Crear una cita
+
+```bash
+curl -X POST http://YOUR-ALB-URL/api/scheduling/appointments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "client_name": "Juan Pérez",
+    "client_email": "juan@example.com",
+    "appointment_date": "2025-12-15T10:00:00",
+    "service_type": "Consulta General",
+    "notes": "Primera visita"
+  }'
+```
+
+### Listar todas las citas
+
+```bash
+curl http://YOUR-ALB-URL/api/scheduling/appointments
+```
+
+### Consultar horarios disponibles
+
+```bash
+curl "http://YOUR-ALB-URL/api/scheduling/available-slots?date=2025-12-15"
+```
+
+### Ver estadísticas
+
+```bash
+curl http://YOUR-ALB-URL/api/scheduling/statistics
+```
+
+### Health check
+
+```bash
+curl http://YOUR-ALB-URL/api/scheduling/health
 ```
 
 ---

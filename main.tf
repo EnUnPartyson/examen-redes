@@ -45,3 +45,27 @@ module "compute" {
     Course    = "Redes"
   }
 }
+
+# Scheduling API Module - Appointment/Scheduling System
+module "scheduling_api" {
+  source = "./modules/scheduling-api"
+
+  project_name           = var.project_name
+  environment            = var.environment
+  vpc_id                 = module.network.vpc_id
+  private_subnet_ids     = module.network.private_subnet_ids
+  app_security_group_id  = module.network.app_security_group_id
+  alb_listener_arn       = module.compute.alb_listener_arn
+  instance_type          = "t2.micro"
+  
+  db_endpoint            = module.compute.db_endpoint
+  db_name                = "appointments"
+  db_user                = "api_user"
+  db_password            = var.db_password
+
+  tags = {
+    Project   = "Examen Redes de Computadores"
+    Owner     = "Estudiante"
+    Course    = "Redes"
+  }
+}
